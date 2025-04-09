@@ -19,7 +19,8 @@ type ExtractModel<S extends DBSchema, table extends ExtractTables<S>> = IntoMode
 
 type IncompleteModel<S extends DBSchema, table extends ExtractTables<S>> = Omit<ExtractModel<S, table>, "id" | "date_created">
 
-type Indexes<S extends DBSchema> = Partial<Record<ExtractTables<S>, (keyof ExtractSchema<S, ExtractTables<S>>)[]>>
+type KeyOfSchema<S extends DBSchema> = keyof ExtractSchema<S, ExtractTables<S>>
+type Indexes<S extends DBSchema> = Partial<Record<ExtractTables<S>, (KeyOfSchema<S>)[]>>
 
 export class Database<S extends DBSchema> {
 	kv: Deno.Kv
@@ -28,10 +29,20 @@ export class Database<S extends DBSchema> {
 	constructor(kv: Deno.Kv, indexes: Indexes<S>) {
 		this.kv = kv
 		this.indexes = indexes
+
+		this.#init_indexes()
 	}
 
 	static async open<S extends DBSchema>(path: string, indexes: Indexes<S>) {
 		return new Database<S>(await Deno.openKv(path), indexes)
+	}
+
+	#init_indexes() {
+		for (const table in this.indexes) {
+			for (const secondary_key of this.indexes[table]!) {
+				this.create_index(table, secondary_key)
+			}
+		}
 	}
 
 	/// Takes in a db model (without an id), generates a ulid, adds that id to the object
@@ -132,10 +143,10 @@ export class Database<S extends DBSchema> {
 			return
 		}
 
-		await this.kv.atomic().set(
+		await this.kv.set(
 			["__indexes_for", table_name, secondary_key],
 			secondary_key,
-		).commit()
+		)
 
 		for (const entry of await this.get_all_entries(table_name)) {
 			const key = entry[secondary_key]
@@ -195,5 +206,19 @@ export class Database<S extends DBSchema> {
 			entries,
 			async (entry) => (await this.get_entry<table>(table_name, entry.value))!,
 		)
+	}
+
+	async get_entry_by_index<table extends ExtractTables<S>>(
+		table_name: table,
+		secondary_key: keyof ExtractSchema<S, table>,
+		secondary_key_value: Deno.KvKeyPart,
+	): Promise<Partial<ExtractModel<S, table>> | undefined> {
+		const entries = await this.get_all_from_key<string>([
+			"__indexes",
+			table_name,
+			secondary_key,
+			secondary_key_value,
+		])
+		return await this.get_entry<table>(table_name, entries[0]?.value)
 	}
 }
