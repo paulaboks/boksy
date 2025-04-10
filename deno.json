@@ -1,4 +1,7 @@
 {
+	"name": "@paulaboks/boksy",
+	"version": "0.1.0",
+	"exports": "./mod.ts",
 	"fmt": {
 		"useTabs": true,
 		"semiColons": false,
