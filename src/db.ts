@@ -1,6 +1,4 @@
-/// <reference lib="deno.unstable" />
-
-import { ulid } from "jsr:@std/ulid"
+import { ulid } from "jsr:@std/ulid@1.0.0"
 
 export interface Model {
 	id: string
@@ -38,7 +36,7 @@ export class Database<S extends DBSchema> {
 		this.#init_indexes()
 	}
 
-	static async open<S extends DBSchema>(path: string, indexes: Indexes<S>) {
+	static async open<S extends DBSchema>(path: string, indexes: Indexes<S>): Promise<Database<S>> {
 		return new Database<S>(await Deno.openKv(path), indexes)
 	}
 
