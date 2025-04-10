@@ -218,7 +218,7 @@ export class Database<S extends DBSchema> {
 			table_name,
 			secondary_key,
 			secondary_key_value,
-		])
+		], Infinity)
 		return await Array.fromAsync(
 			entries,
 			async (entry) => (await this.get_entry<table>(table_name, entry.value))!,
@@ -235,7 +235,7 @@ export class Database<S extends DBSchema> {
 			table_name,
 			secondary_key,
 			secondary_key_value,
-		])
+		], Infinity)
 		return await this.get_entry<table>(table_name, entries[0]?.value)
 	}
 }
