@@ -29,3 +29,7 @@ Deno.bench("Getting an entry", async () => {
 Deno.bench("Getting 1000 entries", async () => {
 	await db.get_all_entries("users", 1000)
 })
+
+Deno.bench("Getting Infinity entries", async () => {
+	await db.get_all_entries("users", Infinity)
+})
