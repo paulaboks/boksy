@@ -17,10 +17,15 @@ type ExtractSchema<S extends DBSchema, table extends ExtractTables<S>> = S[table
 type IntoModel<S extends Schema> = Model & S
 type ExtractModel<S extends DBSchema, table extends ExtractTables<S>> = IntoModel<S[table]>
 
-type IncompleteModel<S extends DBSchema, table extends ExtractTables<S>> = Omit<ExtractModel<S, table>, "id" | "date_created">
+type IncompleteModel<S extends DBSchema, table extends ExtractTables<S>> = Omit<
+	ExtractModel<S, table>,
+	"id" | "date_created"
+>
 
 type KeyOfSchema<S extends DBSchema> = keyof ExtractSchema<S, ExtractTables<S>>
-type Indexes<S extends DBSchema> = Partial<Record<ExtractTables<S>, (KeyOfSchema<S>)[]>>
+type Indexes<S extends DBSchema> = Partial<
+	Record<ExtractTables<S>, (KeyOfSchema<S>)[]>
+>
 
 export class Database<S extends DBSchema> {
 	kv: Deno.Kv
@@ -57,7 +62,10 @@ export class Database<S extends DBSchema> {
 		const entry = { id, date_created, ...value }
 		await this.kv.atomic().set([table_name, id], entry).commit()
 
-		await this.create_indexes_for_entry(table_name, entry as ExtractModel<S, table>)
+		await this.create_indexes_for_entry(
+			table_name,
+			entry as ExtractModel<S, table>,
+		)
 
 		return entry as ExtractModel<S, table>
 	}
@@ -67,7 +75,8 @@ export class Database<S extends DBSchema> {
 		table_name: table,
 		entry: Partial<ExtractModel<S, table>>,
 	) {
-		await this.kv.atomic().set([table_name, entry["id"] as string], entry).commit()
+		await this.kv.atomic().set([table_name, entry["id"] as string], entry)
+			.commit()
 		// Create/set should be the same
 		await this.create_indexes_for_entry(table_name, entry)
 	}
@@ -83,7 +92,7 @@ export class Database<S extends DBSchema> {
 	}
 
 	/// Gets the Deno.KvEntry for the id on the table
-	async  get_entry_full<table extends ExtractTables<S>>(
+	async get_entry_full<table extends ExtractTables<S>>(
 		table_name: table,
 		id: string,
 	): Promise<Deno.KvEntry<Partial<ExtractModel<S, table>>> | undefined> {
@@ -95,14 +104,15 @@ export class Database<S extends DBSchema> {
 		table_name: table,
 		id: string,
 	): Promise<Partial<ExtractModel<S, table>> | undefined> {
-		return (await this.get_from_key<ExtractModel<S, table>>([table_name, id]))?.value
+		return (await this.get_from_key<ExtractModel<S, table>>([table_name, id]))
+			?.value
 	}
 
 	async get_all_from_key<T>(
 		key: Deno.KvKey,
-		limit?: number | undefined,
+		limit: number,
 	): Promise<Deno.KvEntry<Partial<T>>[]> {
-		const entries = this.kv.list({ prefix: key }, { limit: limit ?? Infinity })
+		const entries = this.kv.list({ prefix: key }, { limit })
 		const array = await Array.fromAsync(entries)
 		return array as Deno.KvEntry<Partial<T>>[]
 	}
@@ -111,8 +121,10 @@ export class Database<S extends DBSchema> {
 		table_name: table,
 		limit?: number | undefined,
 	): Promise<Deno.KvEntry<Partial<ExtractModel<S, table>>>[]> {
-		const entries = this.kv.list<ExtractModel<S, table>>({ prefix: [table_name] }, {
-			limit: limit ?? Infinity,
+		const entries = this.kv.list<ExtractModel<S, table>>({
+			prefix: [table_name],
+		}, {
+			limit,
 		})
 		const array = await Array.fromAsync(entries)
 		return array
@@ -123,7 +135,9 @@ export class Database<S extends DBSchema> {
 		table_name: table,
 		limit?: number | undefined,
 	): Promise<Partial<ExtractModel<S, table>>[]> {
-		const entries = this.kv.list<ExtractModel<S, table>>({ prefix: [table_name] }, {
+		const entries = this.kv.list<ExtractModel<S, table>>({
+			prefix: [table_name],
+		}, {
 			limit: limit ?? Infinity,
 		})
 		const array = await Array.fromAsync(entries, (entry) => entry.value)
@@ -165,7 +179,10 @@ export class Database<S extends DBSchema> {
 	// Creates all the indexes for an entry on a table
 	// This checks ["__indexes_for", table_name] to see all the indexes a table needs,
 	// and created the kv pair leading to the primary key
-	async create_indexes_for_entry<table extends ExtractTables<S>, Model extends ExtractModel<S, table>>(
+	async create_indexes_for_entry<
+		table extends ExtractTables<S>,
+		Model extends ExtractModel<S, table>,
+	>(
 		table_name: table,
 		value: Partial<Model>,
 	) {

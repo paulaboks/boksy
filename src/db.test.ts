@@ -7,7 +7,7 @@ type Schema = {
 		email: string
 		name: string
 		age: number
-	},
+	}
 	"empty": Record<string, unknown>
 }
 
@@ -70,12 +70,15 @@ Deno.test("Listing all entries", async () => {
 })
 
 Deno.test("Indexing", async () => {
-	const db = await Database.open<Schema>(":memory:", {users: ["email"]} as const)
+	const db = await Database.open<Schema>(
+		":memory:",
+		{ users: ["email"] } as const,
+	)
 
 	const user = await db.create_entry("users", {
 		name: "a",
 		email: "a@a",
-		age: 23
+		age: 23,
 	})
 
 	const entry = await db.get_entry_by_index("users", "email", "a@a")
