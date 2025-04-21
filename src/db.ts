@@ -22,7 +22,7 @@ type IncompleteModel<S extends DBSchema, table extends ExtractTables<S>> = Omit<
 
 type KeyOfSchema<S extends DBSchema> = keyof ExtractSchema<S, ExtractTables<S>>
 type Indexes<S extends DBSchema> = Partial<
-	Record<ExtractTables<S>, (KeyOfSchema<S>)[]>
+	Record<ExtractTables<S>, string[]>
 >
 
 export class Database<S extends DBSchema> {
