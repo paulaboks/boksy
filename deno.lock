@@ -3,7 +3,8 @@
   "specifiers": {
     "jsr:@std/assert@*": "1.0.8",
     "jsr:@std/internal@^1.0.5": "1.0.6",
-    "jsr:@std/ulid@*": "1.0.0"
+    "jsr:@std/ulid@*": "1.0.0",
+    "jsr:@std/ulid@1.0.0": "1.0.0"
   },
   "jsr": {
     "@std/assert@1.0.8": {
