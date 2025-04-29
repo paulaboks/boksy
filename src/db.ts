@@ -234,6 +234,9 @@ export class Database<S extends DBSchema> {
 			secondary_key,
 			secondary_key_value,
 		], Infinity)
-		return await this.get_entry<table>(table_name, entries[0]?.value)
+		if (entries[0]?.value == undefined) {
+			return undefined
+		}
+		return await this.get_entry<table>(table_name, entries[0].value)
 	}
 }

@@ -84,5 +84,8 @@ Deno.test("Indexing", async () => {
 	const entry = await db.get_entry_by_index("users", "email", "a@a")
 	assertEquals(user, entry)
 
+	const entry2 = await db.get_entry_by_index("users", "email", "b@a")
+	assertEquals(undefined, entry2)
+
 	db.kv.close()
 })
