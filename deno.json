@@ -1,6 +1,6 @@
 {
 	"name": "@paulaboks/boksy",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"exports": "./mod.ts",
 	"fmt": {
 		"useTabs": true,
