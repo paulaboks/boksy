@@ -239,4 +239,42 @@ export class Database<S extends DBSchema> {
 		}
 		return await this.get_entry<table>(table_name, entries[0].value)
 	}
+
+	/// Takes in a db model's id and deletes it on the kv
+	async delete_entry<table extends ExtractTables<S>>(
+		table_name: table,
+		entry: Partial<ExtractModel<S, table>>,
+	) {
+		await this.kv.atomic().delete([table_name, entry["id"] as string])
+			.commit()
+		// Create/set should be the same
+		await this.#delete_indexes_for_entry(table_name, entry)
+	}
+
+	async #delete_indexes_for_entry<
+		table extends ExtractTables<S>,
+		Model extends ExtractModel<S, table>,
+	>(
+		table_name: table,
+		value: Partial<Model>,
+	) {
+		const indexes_to_create = this.kv.list<string>({
+			prefix: ["__indexes_for", table_name],
+		})
+
+		for await (const secondary_key of indexes_to_create) {
+			const secondary_key_value = value[secondary_key.value as keyof Model]
+
+			await this.kv.atomic().delete(
+				[
+					"__indexes",
+					table_name,
+					secondary_key.value,
+					secondary_key_value as Deno.KvKeyPart,
+					value.id!,
+				],
+			)
+				.commit()
+		}
+	}
 }

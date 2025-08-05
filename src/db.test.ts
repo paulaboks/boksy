@@ -89,3 +89,26 @@ Deno.test("Indexing", async () => {
 
 	db.kv.close()
 })
+
+Deno.test("Deleting", async () => {
+	const db = await Database.open<Schema>(
+		":memory:",
+		{ users: ["email"] } as const,
+	)
+
+	const user = await db.create_entry("users", {
+		name: "a",
+		email: "a@a",
+		age: 23,
+	})
+
+	await db.delete_entry("users", user)
+
+	const entry = await db.get_entry("users", user.id)
+	const entry2 = await db.get_entry_by_index("users", "email", "a@a")
+
+	assertEquals(undefined, entry)
+	assertEquals(undefined, entry2)
+
+	db.kv.close()
+})
