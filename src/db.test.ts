@@ -1,18 +1,19 @@
+import { z } from "zod/v4"
 import { Database } from "./db.ts"
 
-import { assert, assertEquals } from "jsr:@std/assert"
+import { assertEquals } from "@std/assert"
 
-type Schema = {
-	"users": {
-		email: string
-		name: string
-		age: number
-	}
-	"empty": Record<string, unknown>
-}
+const schema = z.object({
+	"users": z.object({
+		email: z.string(),
+		name: z.string(),
+		age: z.number(),
+	}),
+	"empty": z.record(z.never(), z.never()),
+})
 
 Deno.test("Creating and getting entries", async () => {
-	const db = await Database.open<Schema>(":memory:", {})
+	const db = await Database.open<z.infer<typeof schema>>(":memory:", schema, {})
 
 	const user1 = await db.create_entry("users", {
 		"email": "a@a",
@@ -35,7 +36,7 @@ Deno.test("Creating and getting entries", async () => {
 })
 
 Deno.test("Updating entry", async () => {
-	const db = await Database.open<Schema>(":memory:", {})
+	const db = await Database.open<z.infer<typeof schema>>(":memory:", schema, {})
 
 	const user = await db.create_entry("users", {
 		"email": "a@a",
@@ -55,7 +56,7 @@ Deno.test("Updating entry", async () => {
 })
 
 Deno.test("Listing all entries", async () => {
-	const db = await Database.open<Schema>(":memory:", {})
+	const db = await Database.open<z.infer<typeof schema>>(":memory:", schema, {})
 
 	const empty1 = await db.create_entry("empty", {})
 	const empty2 = await db.create_entry("empty", {})
@@ -70,8 +71,9 @@ Deno.test("Listing all entries", async () => {
 })
 
 Deno.test("Indexing", async () => {
-	const db = await Database.open<Schema>(
+	const db = await Database.open<z.infer<typeof schema>>(
 		":memory:",
+		schema,
 		{ users: ["email"] } as const,
 	)
 
@@ -91,8 +93,9 @@ Deno.test("Indexing", async () => {
 })
 
 Deno.test("Deleting", async () => {
-	const db = await Database.open<Schema>(
+	const db = await Database.open(
 		":memory:",
+		schema,
 		{ users: ["email"] } as const,
 	)
 

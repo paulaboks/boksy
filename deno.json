@@ -1,11 +1,16 @@
 {
 	"name": "@paulaboks/boksy",
-	"version": "0.1.4",
+	"version": "0.2.0",
 	"exports": "./mod.ts",
 	"fmt": {
 		"useTabs": true,
 		"semiColons": false,
 		"indentWidth": 4,
 		"lineWidth": 120
+	},
+	"imports": {
+		"@paulaboks/datetime": "jsr:@paulaboks/datetime@^0.1.1",
+		"@std": "jsr:@std",
+		"zod": "npm:zod@^4.1.11"
 	}
 }

@@ -1,4 +1,5 @@
-import { ulid } from "jsr:@std/ulid@1.0.0"
+import { ulid } from "@std/ulid"
+import type { z } from "zod/v4"
 
 export interface Model {
 	id: string
@@ -27,17 +28,23 @@ type Indexes<S extends DBSchema> = Partial<
 
 export class Database<S extends DBSchema> {
 	kv: Deno.Kv
+	schema: z.ZodObject
 	indexes: Indexes<S>
 
-	constructor(kv: Deno.Kv, indexes: Indexes<S>) {
+	constructor(kv: Deno.Kv, schema: z.ZodObject, indexes: Indexes<S>) {
 		this.kv = kv
+		this.schema = schema
 		this.indexes = indexes
 
 		this.#init_indexes()
 	}
 
-	static async open<S extends DBSchema>(path: string, indexes: Indexes<S>): Promise<Database<S>> {
-		return new Database<S>(await Deno.openKv(path), indexes)
+	static async open<S extends DBSchema>(
+		path: string,
+		schema: z.ZodObject,
+		indexes: Indexes<S>,
+	): Promise<Database<S>> {
+		return new Database<S>(await Deno.openKv(path), schema, indexes)
 	}
 
 	#init_indexes() {

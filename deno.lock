@@ -1,12 +1,16 @@
 {
-  "version": "4",
+  "version": "5",
   "specifiers": {
+    "jsr:@paulaboks/datetime@~0.1.1": "0.1.1",
     "jsr:@std/assert@*": "1.0.8",
     "jsr:@std/internal@^1.0.5": "1.0.6",
     "jsr:@std/ulid@*": "1.0.0",
-    "jsr:@std/ulid@1.0.0": "1.0.0"
+    "npm:zod@^4.1.11": "4.1.11"
   },
   "jsr": {
+    "@paulaboks/datetime@0.1.1": {
+      "integrity": "9bc4d5f4697a73f07db77d1bf95f38edec44820cba497338995520149457a7c6"
+    },
     "@std/assert@1.0.8": {
       "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
       "dependencies": [
@@ -19,5 +23,16 @@
     "@std/ulid@1.0.0": {
       "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
     }
+  },
+  "npm": {
+    "zod@4.1.11": {
+      "integrity": "sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@paulaboks/datetime@~0.1.1",
+      "npm:zod@^4.1.11"
+    ]
   }
 }
