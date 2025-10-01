@@ -13,7 +13,8 @@
 	},
 	"imports": {
 		"@paulaboks/datetime": "jsr:@paulaboks/datetime@^0.1.1",
-		"@std": "jsr:@std",
+		"@std/ulid": "jsr:@std/ulid@^1.0.0",
+		"@std/assert": "jsr:@std/assert@^1.0.0",
 		"zod": "npm:zod@^4.1.11"
 	}
 }
