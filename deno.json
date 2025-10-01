@@ -1,7 +1,10 @@
 {
 	"name": "@paulaboks/boksy",
-	"version": "0.2.0",
-	"exports": "./mod.ts",
+	"version": "0.2.1",
+	"exports": {
+		".": "./mod.ts",
+		"./migrate_dates": "./src/migrate_dates.ts"
+	},
 	"fmt": {
 		"useTabs": true,
 		"semiColons": false,

@@ -1,9 +1,10 @@
 import { ulid } from "@std/ulid"
+import { DateTime } from "@paulaboks/datetime"
 import type { z } from "zod/v4"
 
 export interface Model {
 	id: string
-	date_created: Date
+	date_created: string
 }
 
 type Schema = Record<string, unknown>
@@ -62,7 +63,7 @@ export class Database<S extends DBSchema> {
 		value: IncompleteModel<S, table>,
 	): Promise<ExtractModel<S, table>> {
 		const id = ulid()
-		const date_created = new Date()
+		const date_created = DateTime.now().toString()
 
 		const entry = { id, date_created, ...value }
 		await this.kv.atomic().set([table_name, id], entry).commit()
