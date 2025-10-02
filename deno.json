@@ -1,6 +1,6 @@
 {
 	"name": "@paulaboks/boksy",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"exports": {
 		".": "./mod.ts",
 		"./migrate_dates": "./src/migrate_dates.ts"
