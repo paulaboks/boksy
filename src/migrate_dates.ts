@@ -12,7 +12,9 @@ if (import.meta.main) {
 	const kv = await Deno.openKv(path)
 
 	for await (const { key, value } of kv.list({ prefix: [] })) {
-		assert(typeof value === "object")
+		if (typeof value !== "object") {
+			continue
+		}
 		for (const value_key in value) {
 			const val = value as Record<string, unknown>
 			if (val[value_key] instanceof Date) {
