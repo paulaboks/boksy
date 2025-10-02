@@ -3,9 +3,10 @@
   "specifiers": {
     "jsr:@paulaboks/datetime@~0.1.1": "0.1.1",
     "jsr:@std/assert@*": "1.0.8",
+    "jsr:@std/assert@1": "1.0.8",
     "jsr:@std/internal@^1.0.5": "1.0.6",
     "jsr:@std/ulid@*": "1.0.0",
-    "npm:zod@^4.1.11": "4.1.11"
+    "jsr:@std/ulid@1": "1.0.0"
   },
   "jsr": {
     "@paulaboks/datetime@0.1.1": {
@@ -24,15 +25,11 @@
       "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
     }
   },
-  "npm": {
-    "zod@4.1.11": {
-      "integrity": "sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg=="
-    }
-  },
   "workspace": {
     "dependencies": [
       "jsr:@paulaboks/datetime@~0.1.1",
-      "npm:zod@^4.1.11"
+      "jsr:@std/assert@1",
+      "jsr:@std/ulid@1"
     ]
   }
 }

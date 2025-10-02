@@ -1,6 +1,5 @@
 import { ulid } from "@std/ulid"
 import { DateTime } from "@paulaboks/datetime"
-import type { z } from "zod/v4"
 
 export interface Model {
 	id: string
@@ -29,12 +28,10 @@ type Indexes<S extends DBSchema> = Partial<
 
 export class Database<S extends DBSchema> {
 	kv: Deno.Kv
-	schema: z.ZodObject
 	indexes: Indexes<S>
 
-	constructor(kv: Deno.Kv, schema: z.ZodObject, indexes: Indexes<S>) {
+	constructor(kv: Deno.Kv, indexes: Indexes<S>) {
 		this.kv = kv
-		this.schema = schema
 		this.indexes = indexes
 
 		this.#init_indexes()
@@ -42,10 +39,9 @@ export class Database<S extends DBSchema> {
 
 	static async open<S extends DBSchema>(
 		path: string,
-		schema: z.ZodObject,
 		indexes: Indexes<S>,
 	): Promise<Database<S>> {
-		return new Database<S>(await Deno.openKv(path), schema, indexes)
+		return new Database<S>(await Deno.openKv(path), indexes)
 	}
 
 	#init_indexes() {

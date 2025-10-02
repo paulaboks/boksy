@@ -1,6 +1,6 @@
 {
 	"name": "@paulaboks/boksy",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"exports": {
 		".": "./mod.ts",
 		"./migrate_dates": "./src/migrate_dates.ts"
@@ -14,7 +14,6 @@
 	"imports": {
 		"@paulaboks/datetime": "jsr:@paulaboks/datetime@^0.1.1",
 		"@std/ulid": "jsr:@std/ulid@^1.0.0",
-		"@std/assert": "jsr:@std/assert@^1.0.0",
-		"zod": "npm:zod@^4.1.11"
+		"@std/assert": "jsr:@std/assert@^1.0.0"
 	}
 }

@@ -5,29 +5,28 @@ Simple database using Deno.Kv
 ## Examples
 
 ```ts
-import { z } from "npm:zod/v4"
 import { Database } from "jsr:@paulaboks/boksy"
 
 // First declare a schema for your db
-const schema = z.object({
-	"users": z.object({
-		email: z.string(),
-		name: z.string(),
-		age: z.number(),
-	}),
-	"books": z.object({
-		user_id: z.string(),
-		name: z.string(),
-		content: z.string(),
-	}),
-})
+type Schema = {
+	users: {
+		email: string
+		name: string
+		age: number
+	}
+	books: {
+		user_id: string
+		name: string
+		content: string
+	}
+}
 
 // Then open your database
 // The second argument is a object where the keys are names of tables
 // and the values are arrays with columns to be indexed
 // Normally you can only find entries by their id, indexes allow us to get by other columns
 // If you change this object to add new indexes, they will be created on old entries as well
-const db = await Database.open<z.infer<typeof schema>>(":memory:", schema, {
+const db = await Database.open<Schema>(":memory:", {
 	users: ["email"],
 	books: ["user_id"],
 })
